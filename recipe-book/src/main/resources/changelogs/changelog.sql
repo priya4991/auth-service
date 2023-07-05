@@ -1,7 +1,8 @@
 -- liquibase formatted sql
 
 -- changeset liquibase:2
-DROP TABLE test_table;
+DROP TABLE user_details CASCADE;
+DROP TABLE role_details CASCADE;
 CREATE TABLE user_details
 (
     id SERIAL PRIMARY KEY,
@@ -11,5 +12,11 @@ CREATE TABLE user_details
     last_name VARCHAR(25),
     email_id VARCHAR(100),
     phone_number VARCHAR(20),
-    dob DATE
-)
+    date_of_birth DATE
+);
+CREATE TABLE role_details
+(
+    id SERIAL PRIMARY KEY,
+    role_name VARCHAR(20)
+);
+INSERT INTO role_details (role_name) VALUES ('ROLE_ADMIN'),('ROLE_USER');
