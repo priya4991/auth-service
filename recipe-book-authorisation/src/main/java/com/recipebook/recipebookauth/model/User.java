@@ -1,4 +1,4 @@
-package com.recipebook.recipebook.model;
+package com.recipebook.recipebookauth.model;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -54,5 +54,5 @@ public class User {
     @JoinTable(name = "user_roles",
         joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private Set<Role> role;
+    private Set<Role> roles;
 }

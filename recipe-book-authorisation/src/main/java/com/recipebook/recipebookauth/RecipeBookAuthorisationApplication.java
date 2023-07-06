@@ -1,13 +1,13 @@
-package com.recipebook.recipebook;
+package com.recipebook.recipebookauth;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RecipeBookApplication {
+public class RecipeBookAuthorisationApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(RecipeBookApplication.class, args);
+		SpringApplication.run(RecipeBookAuthorisationApplication.class, args);
 	}
 
 }

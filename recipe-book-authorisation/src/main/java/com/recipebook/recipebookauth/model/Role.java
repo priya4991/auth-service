@@ -1,4 +1,4 @@
-package com.recipebook.recipebook.model;
+package com.recipebook.recipebookauth.model;
 
 import java.util.Set;
 

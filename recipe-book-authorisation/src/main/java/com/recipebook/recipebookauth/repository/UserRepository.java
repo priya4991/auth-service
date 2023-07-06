@@ -1,10 +1,10 @@
-package com.recipebook.recipebook.repository;
+package com.recipebook.recipebookauth.repository;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.recipebook.recipebook.model.User;
+import com.recipebook.recipebookauth.model.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);

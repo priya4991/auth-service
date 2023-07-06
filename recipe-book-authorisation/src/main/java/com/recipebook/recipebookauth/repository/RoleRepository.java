@@ -1,10 +1,10 @@
-package com.recipebook.recipebook.repository;
+package com.recipebook.recipebookauth.repository;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.recipebook.recipebook.model.Role;
+import com.recipebook.recipebookauth.model.Role;
 
 public interface RoleRepository extends JpaRepository<Role, Long> {
     Optional<Role> findByName(String name);

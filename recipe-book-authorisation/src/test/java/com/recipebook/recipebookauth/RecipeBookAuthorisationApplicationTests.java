@@ -1,10 +1,10 @@
-package com.recipebook.recipebook;
+package com.recipebook.recipebookauth;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class RecipeBookApplicationTests {
+class RecipeBookAuthorisationApplicationTests {
 
 	@Test
 	void contextLoads() {
