@@ -3,6 +3,7 @@
 -- changeset liquibase:2
 DROP TABLE user_details CASCADE;
 DROP TABLE role_details CASCADE;
+DROP Table user_roles;
 CREATE TABLE user_details
 (
     id SERIAL PRIMARY KEY,
@@ -19,4 +20,4 @@ CREATE TABLE role_details
     id SERIAL PRIMARY KEY,
     role_name VARCHAR(20)
 );
-INSERT INTO role_details (role_name) VALUES ('ROLE_ADMIN'),('ROLE_USER');
+INSERT INTO role_details (role_name) VALUES ('ROLE_ADMIN'),('ROLE_USER'),('ROLE_MEMBER');
