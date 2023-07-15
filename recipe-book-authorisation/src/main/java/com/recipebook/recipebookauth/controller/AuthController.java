@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.recipebook.recipebookauth.config.TokenManager;
 import com.recipebook.recipebookauth.model.Role;
 import com.recipebook.recipebookauth.model.User;
+import com.recipebook.recipebookauth.model.Auth.TokenResponse;
 import com.recipebook.recipebookauth.model.DTO.LoginDTO;
 import com.recipebook.recipebookauth.model.DTO.SignupDTO;
 import com.recipebook.recipebookauth.repository.RoleRepository;
@@ -35,15 +37,19 @@ public class AuthController {
     private RoleRepository roleRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private TokenManager tokenManager;
 
     @PostMapping("/signin")
-    public ResponseEntity<String> authenticateUser(@RequestBody LoginDTO login) {
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginDTO login) {
         try {
-        Authentication authentication  = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-            login.getUsernameOrEmail(), login.getPassword()
-        ));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return new ResponseEntity<>("User logged in successfully", HttpStatus.OK);
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    login.getUsernameOrEmail(), login.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            String token = tokenManager.generateJwtToken(authentication);
+
+            return new ResponseEntity<>(new TokenResponse(token), HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
         }
@@ -72,7 +78,7 @@ public class AuthController {
 
         userRepository.save(user);
 
-        return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
+        return new ResponseEntity<>("User registered successfully", HttpStatus.CREATED);
     }
 
     @GetMapping("/getall")
@@ -80,5 +86,5 @@ public class AuthController {
         List<User> users = userRepository.findAll();
         return new ResponseEntity<List<User>>(users, HttpStatus.OK);
     }
-    
+
 }

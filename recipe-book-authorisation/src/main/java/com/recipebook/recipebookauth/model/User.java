@@ -6,6 +6,7 @@ import java.util.Set;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,11 +20,10 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "user_details", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"username"}),
-    @UniqueConstraint(columnNames = {"passw"}),
-    @UniqueConstraint(columnNames = {"email_id"}),
-    @UniqueConstraint(columnNames = {"phone_number"})}
-    )
+        @UniqueConstraint(columnNames = { "username" }),
+        @UniqueConstraint(columnNames = { "passw" }),
+        @UniqueConstraint(columnNames = { "email_id" }),
+        @UniqueConstraint(columnNames = { "phone_number" }) })
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,9 +50,7 @@ public class User {
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "user_roles",
-        joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Role> roles;
 }

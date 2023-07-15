@@ -17,7 +17,7 @@ public class SignupDTO {
 
     @JsonProperty("lastName")
     private String lastname;
-    
+
     private String email;
 
     @JsonProperty("phoneNumber")
