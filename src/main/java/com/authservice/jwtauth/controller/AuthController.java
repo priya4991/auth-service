@@ -23,7 +23,7 @@ import com.authservice.jwtauth.model.Role;
 import com.authservice.jwtauth.model.User;
 import com.authservice.jwtauth.model.Auth.TokenResponse;
 import com.authservice.jwtauth.model.DTO.ChangePasswordDTO;
-import com.authservice.jwtauth.model.DTO.LoginDTO;
+import com.authservice.jwtauth.model.DTO.SigninDTO;
 import com.authservice.jwtauth.model.DTO.SignupDTO;
 import com.authservice.jwtauth.repository.RoleRepository;
 import com.authservice.jwtauth.repository.UserRepository;
@@ -43,7 +43,7 @@ public class AuthController {
     private TokenManager tokenManager;
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginDTO login) {
+    public ResponseEntity<?> authenticateUser(@RequestBody SigninDTO login) {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     login.getUsernameOrEmail(), login.getPassword()));
@@ -91,13 +91,17 @@ public class AuthController {
             if (userRepository.existsById(id)) {
                 User user = userRepository.findById(id).get();
                 // match old password with password in db
-                if (passwordEncoder.matches(changePasswordDTO.getOldPassword(), user.getPassword())
-                        && !changePasswordDTO.getNewPassword().equals(changePasswordDTO.getOldPassword())) {
-                    user.setPassword(passwordEncoder.encode((changePasswordDTO.getNewPassword())));
-                    userRepository.save(user);
-                    return new ResponseEntity<String>("Password changed successfully", HttpStatus.OK);
+                if (passwordEncoder.matches(changePasswordDTO.getOldPassword(), user.getPassword())) {
+                    if (!changePasswordDTO.getNewPassword().equals(changePasswordDTO.getOldPassword())) {
+                        user.setPassword(passwordEncoder.encode((changePasswordDTO.getNewPassword())));
+                        userRepository.save(user);
+                        return new ResponseEntity<String>("Password changed successfully", HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity<String>("New password cannot be same as old password",
+                                HttpStatus.BAD_REQUEST);
+                    }
                 } else {
-                    return new ResponseEntity<String>("Incorrect password combination", HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<String>("Incorrect old password", HttpStatus.BAD_REQUEST);
                 }
             } else {
                 return new ResponseEntity<String>("User not found", HttpStatus.NOT_FOUND);
