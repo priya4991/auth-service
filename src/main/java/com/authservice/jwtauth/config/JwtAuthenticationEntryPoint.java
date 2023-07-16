@@ -18,8 +18,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
     public void commence(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException authException) throws IOException, ServletException {
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, null);
-        // TODO Auto-generated method stub
-        // throw new UnsupportedOperationException("Unimplemented method 'commence'");
     }
 
 }
