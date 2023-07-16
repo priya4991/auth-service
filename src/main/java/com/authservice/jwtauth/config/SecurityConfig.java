@@ -38,8 +38,8 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authorize) -> authorize
-                        // .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/signin").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/signon").permitAll()
                         .anyRequest().authenticated()
 
                 )
@@ -49,6 +49,5 @@ public class SecurityConfig {
 
         http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
-
     }
 }

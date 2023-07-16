@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ import com.authservice.jwtauth.config.TokenManager;
 import com.authservice.jwtauth.model.Role;
 import com.authservice.jwtauth.model.User;
 import com.authservice.jwtauth.model.Auth.TokenResponse;
+import com.authservice.jwtauth.model.DTO.ChangePasswordDTO;
 import com.authservice.jwtauth.model.DTO.LoginDTO;
 import com.authservice.jwtauth.model.DTO.SignupDTO;
 import com.authservice.jwtauth.repository.RoleRepository;
@@ -79,6 +81,32 @@ public class AuthController {
         userRepository.save(user);
 
         return new ResponseEntity<>("User registered successfully", HttpStatus.CREATED);
+    }
+
+    @PostMapping("/changepassword/{id}")
+    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO,
+            @PathVariable(name = "id") long id) {
+        try {
+            // try to find the user by id
+            if (userRepository.existsById(id)) {
+                User user = userRepository.findById(id).get();
+                // match old password with password in db
+                if (passwordEncoder.matches(changePasswordDTO.getOldPassword(), user.getPassword())
+                        && !changePasswordDTO.getNewPassword().equals(changePasswordDTO.getOldPassword())) {
+                    user.setPassword(passwordEncoder.encode((changePasswordDTO.getNewPassword())));
+                    userRepository.save(user);
+                    return new ResponseEntity<String>("Password changed successfully", HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<String>("Incorrect password combination", HttpStatus.BAD_REQUEST);
+                }
+            } else {
+                return new ResponseEntity<String>("User not found", HttpStatus.NOT_FOUND);
+            }
+
+        } catch (Exception ex) {
+            return new ResponseEntity<String>(ex.getMessage(), HttpStatus.FORBIDDEN);
+        }
+
     }
 
     @GetMapping("/getall")
