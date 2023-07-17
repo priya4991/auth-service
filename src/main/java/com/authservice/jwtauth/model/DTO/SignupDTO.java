@@ -5,32 +5,34 @@ import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 public class SignupDTO {
-    @NotNull(message = "username is mandatory")
+    @NotNull(message = "Username is mandatory")
     private String username;
-    @NotNull(message = "password is mandatory")
+    @NotNull(message = "Password is mandatory")
     private String password;
 
-    @NotNull(message = "first name is mandatory")
+    @NotNull(message = "First name is mandatory")
     @JsonProperty("firstName")
     private String firstname;
 
-    @NotNull(message = "last name is mandatory")
+    @NotNull(message = "Last name is mandatory")
     @JsonProperty("lastName")
     private String lastname;
 
-    @NotNull(message = "email id is mandatory")
+    @NotNull(message = "Email ID is mandatory")
+    @Email
     private String email;
 
-    @NotNull(message = "phone number is mandatory")
+    @NotNull(message = "Phone number is mandatory")
     @JsonProperty("phoneNumber")
     private String phone;
 
-    @NotNull(message = "date of birth is mandatory")
+    @NotNull(message = "Date of birth is mandatory")
     @JsonProperty("dateOfBirth")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dob;

@@ -26,6 +26,8 @@ import com.authservice.jwtauth.model.DTO.SignupDTO;
 import com.authservice.jwtauth.model.DTO.UpdateUserDTO;
 import com.authservice.jwtauth.service.CrudUserService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -38,7 +40,6 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody SigninDTO login) {
-        try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     login.getUsernameOrEmail(), login.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -46,42 +47,25 @@ public class AuthController {
             String token = tokenManager.generateJwtToken(authentication);
 
             return new ResponseEntity<TokenResponse>(new TokenResponse(token), HttpStatus.OK);
-        } catch (Exception ex) {
-            return new ResponseEntity<String>(ex.getMessage(), HttpStatus.FORBIDDEN);
-        }
     }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignupDTO signup) {
-        try {
-
         User user = crudUserService.createUser(signup);
-
         return new ResponseEntity<User>(user, HttpStatus.CREATED);
-        } catch (Exception ex) {
-            return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-        }
     }
 
     @PostMapping("/changepassword/{id}")
-    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO,
+    public ResponseEntity<String> changePassword(@Valid @RequestBody ChangePasswordDTO changePasswordDTO,
             @PathVariable(name = "id") long id) {
-        try {
-            crudUserService.changePassword(changePasswordDTO, id);
-            return new ResponseEntity<String>("Password change successfully", HttpStatus.OK);
-        } catch (Exception ex) {
-            return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+        crudUserService.changePassword(changePasswordDTO, id);
+        return new ResponseEntity<String>("Password change successfully", HttpStatus.OK);
     }
 
     @PutMapping("/updateuserdetails/{id}")
     public ResponseEntity<?> updateUser(@RequestBody UpdateUserDTO updateUserDTO, @PathVariable(name = "id") long id) {
-        try {
-            User user = crudUserService.updateUser(updateUserDTO, id);
-            return new ResponseEntity<User>(user, HttpStatus.OK);
-        } catch (Exception ex) {
-            return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+        User user = crudUserService.updateUser(updateUserDTO, id);
+        return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
     @GetMapping("/getall")
