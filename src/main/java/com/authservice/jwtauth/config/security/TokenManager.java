@@ -1,4 +1,4 @@
-package com.authservice.jwtauth.config;
+package com.authservice.jwtauth.config.security;
 
 import java.io.Serializable;
 import java.util.Date;

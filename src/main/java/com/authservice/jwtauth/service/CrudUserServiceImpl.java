@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.authservice.jwtauth.config.exception.BadRequestException;
 import com.authservice.jwtauth.model.Role;
 import com.authservice.jwtauth.model.User;
 import com.authservice.jwtauth.model.DTO.ChangePasswordDTO;
@@ -25,12 +26,12 @@ public class CrudUserServiceImpl implements CrudUserService {
     private UserRepository userRepository;
 
     @Override
-    public User createUser(SignupDTO signup) throws Exception {
+    public User createUser(SignupDTO signup) throws BadRequestException {
         if (userRepository.existsByUsername(signup.getUsername())) {
-            throw new Exception("Username is already taken");
+            throw new BadRequestException("Username is already taken");
         }
         if (userRepository.existsByEmail((signup.getEmail()))) {
-            throw new Exception("Email is already registered");
+            throw new BadRequestException("Email is already registered");
         }
         User user = new User();
         user.setUsername(signup.getUsername());
@@ -50,7 +51,7 @@ public class CrudUserServiceImpl implements CrudUserService {
     }
 
     @Override
-    public User updateUser(UpdateUserDTO updateUser, long id) throws Exception {
+    public User updateUser(UpdateUserDTO updateUser, long id) throws BadRequestException {
         User user = null;
         if (userRepository.existsById(id)) {
             user = userRepository.findById(id).get();
@@ -68,13 +69,13 @@ public class CrudUserServiceImpl implements CrudUserService {
             }
             userRepository.save(user);
         } else {
-            throw new Exception("User not found");
+            throw new BadRequestException("User not found");
         }
         return user;
     }
 
     @Override
-    public void changePassword(ChangePasswordDTO changePasswordDTO, long id) throws Exception {
+    public void changePassword(ChangePasswordDTO changePasswordDTO, long id) throws BadRequestException {
         // try to find the user by id
         if (userRepository.existsById(id)) {
             User user = userRepository.findById(id).get();
@@ -84,13 +85,13 @@ public class CrudUserServiceImpl implements CrudUserService {
                     user.setPassword(passwordEncoder.encode((changePasswordDTO.getNewPassword())));
                     userRepository.save(user);
                 } else {
-                    throw new Exception("New password cannot be same as old password");
+                    throw new BadRequestException("New password cannot be same as old password");
                 }
             } else {
-                throw new Exception("Incorrect old password");
+                throw new BadRequestException("Incorrect old password");
             }
         } else {
-            throw new Exception("User not found");
+            throw new BadRequestException("User not found");
         }
     }
 
