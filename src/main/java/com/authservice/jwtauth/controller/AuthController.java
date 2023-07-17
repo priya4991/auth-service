@@ -67,7 +67,6 @@ public class AuthController {
     public ResponseEntity<String> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO,
             @PathVariable(name = "id") long id) {
         try {
-            // try to find the user by id
             crudUserService.changePassword(changePasswordDTO, id);
             return new ResponseEntity<String>("Password change successfully", HttpStatus.OK);
         } catch (Exception ex) {
