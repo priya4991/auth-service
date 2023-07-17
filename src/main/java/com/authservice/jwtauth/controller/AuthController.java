@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.authservice.jwtauth.config.TokenManager;
+import com.authservice.jwtauth.config.security.TokenManager;
 import com.authservice.jwtauth.model.User;
 import com.authservice.jwtauth.model.Auth.TokenResponse;
 import com.authservice.jwtauth.model.DTO.ChangePasswordDTO;

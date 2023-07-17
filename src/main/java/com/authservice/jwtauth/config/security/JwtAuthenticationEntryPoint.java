@@ -1,4 +1,4 @@
-package com.authservice.jwtauth.config;
+package com.authservice.jwtauth.config.security;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -17,7 +17,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException authException) throws IOException, ServletException {
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, null);
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Could not authenticate user");
     }
 
 }
