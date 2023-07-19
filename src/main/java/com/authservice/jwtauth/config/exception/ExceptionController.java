@@ -1,5 +1,6 @@
 package com.authservice.jwtauth.config.exception;
 
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,7 +8,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -34,9 +34,9 @@ public class ExceptionController {
                 HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class) 
-    public ResponseEntity<Map<String, List<String>>> deserializationException(HttpMessageNotReadableException ex) {
-        return new ResponseEntity<Map<String, List<String>>>(getErrorsMap(List.of(ex.getMessage())),
+    @ExceptionHandler(DateTimeParseException.class) 
+    public ResponseEntity<Map<String, List<String>>> deserializationException(DateTimeParseException ex) {
+        return new ResponseEntity<Map<String, List<String>>>(getErrorsMap(List.of("Invalid date format")),
                 HttpStatus.BAD_REQUEST);
     }
 

@@ -7,9 +7,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class SignupDTO {
     @NotNull(message = "Username is mandatory")
     private String username;
@@ -25,7 +27,7 @@ public class SignupDTO {
     private String lastname;
 
     @NotNull(message = "Email ID is mandatory")
-    @Email
+    @Email(message = "Invalid email ID")
     private String email;
 
     @NotNull(message = "Phone number is mandatory")
