@@ -101,4 +101,18 @@ public class CrudUserServiceImpl implements CrudUserService {
         return users;
     }
 
+    @Override
+    public void deleteUser(long id) {
+        if (userRepository.existsById(id)) {
+            userRepository.deleteById(id);
+        } else {
+            throw new BadRequestException("User not found");
+        }
+    }
+
+    @Override
+    public void deleteAll() {
+        userRepository.deleteAll();
+    }
+
 }

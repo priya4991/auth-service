@@ -13,4 +13,6 @@ public interface CrudUserService {
     public User updateUser(UpdateUserDTO updateUser, long id) throws BadRequestException;
     public void changePassword(ChangePasswordDTO changePassword, long id) throws BadRequestException;
     public List<User> getAllUsers();
+    public void deleteUser(long id);
+    public void deleteAll();
 }

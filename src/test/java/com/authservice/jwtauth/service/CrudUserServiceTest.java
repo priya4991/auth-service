@@ -153,6 +153,26 @@ public class CrudUserServiceTest {
         verify(userRepository).findAll();
     }
 
+    @Test
+    public void deleteById_return_success() {
+        crudUserService.deleteUser(userId1);
+        verify(userRepository).deleteById(userId1);
+    }
+
+    @Test
+    public void deleteById_return_BadRequest_invalidUserId() {
+        BadRequestException ex = assertThrows(BadRequestException.class, () -> {
+            crudUserService.deleteUser(userId2);
+        });
+        assertEquals("User not found", ex.getMessage());
+    }
+
+    @Test
+    public void deleteAll_success() {
+        crudUserService.deleteAll();
+        verify(userRepository).deleteAll();
+    }
+
    
 
     private SignupDTO createSignupDTO() {

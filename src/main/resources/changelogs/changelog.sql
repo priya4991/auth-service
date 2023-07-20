@@ -20,4 +20,9 @@ CREATE TABLE role_details
     id SERIAL PRIMARY KEY,
     role_name VARCHAR(20)
 );
+CREATE TABLE user_roles (
+    user_id BIGINT REFERENCES user_details (id) ON DELETE CASCADE,
+    role_id BIGINT REFERENCES role_details (id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, role_id)
+);
 INSERT INTO role_details (role_name) VALUES ('ROLE_ADMIN'),('ROLE_USER'),('ROLE_MEMBER');
