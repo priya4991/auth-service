@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -72,6 +73,18 @@ public class AuthController {
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = crudUserService.getAllUsers();
         return new ResponseEntity<List<User>>(users, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable(name = "id") long id) {
+        crudUserService.deleteUser(id);
+        return new ResponseEntity<String>("User is deleted", HttpStatus.OK);
+    }
+
+    @DeleteMapping("/deleteall")
+    public ResponseEntity<String> deleteAll() {
+        crudUserService.deleteAll();
+        return new ResponseEntity<String>("All users deleted", HttpStatus.OK);
     }
 
 }
