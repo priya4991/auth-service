@@ -42,7 +42,8 @@ public class CrudUserServiceImpl implements CrudUserService {
         user.setPhoneNumber(signup.getPhone());
         user.setPassword(passwordEncoder.encode(signup.getPassword()));
 
-        Role roles = roleRepository.findByName("ROLE_USER").get();
+
+        Role roles = roleRepository.findByName("ROLE_USER").orElse(new Role("ROLE_USER"));
         user.setRoles(Collections.singleton(roles));
 
         userRepository.save(user);

@@ -55,9 +55,7 @@ public class CrudUserServiceTest {
         when(userRepository.existsByUsername(username)).thenReturn(true);
         when(userRepository.findById(userId1)).thenReturn(Optional.of(createUser()));
 
-        Role role = new Role();
-        role.setId(1);
-        role.setName("ROLE_USER");
+        Role role = new Role("ROLE_USER");
         when(roleRepository.findByName("ROLE_USER")).thenReturn(Optional.of(role));
 
         when(passwordEncoder.encode(anyString())).thenReturn("xyz123456");
