@@ -1,11 +1,16 @@
 package com.authservice.jwtauth.integration;
 
 import java.time.LocalDate;
-import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
@@ -22,6 +27,8 @@ import com.authservice.jwtauth.model.User;
 import com.authservice.jwtauth.model.DTO.SignupDTO;
 import com.authservice.jwtauth.repository.UserRepository;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.transaction.Transactional;
 
 @SpringBootTest
@@ -38,7 +45,10 @@ public class UserIntegrationTest {
     @Autowired
     private UserRepository userRepository;
 
-    private static final String BEARERTOKEN = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwZHV0dGFAZ21haWwuY29tIiwiZXhwIjoxNjkwMTcwNTMyLCJpYXQiOjE2OTAxNTI1NzN9.Eip7Of0RlKZPnNA1PDDs0jp02kyqyoMllY8jApeA3qQ";
+    @Value("${jwt.secret}")
+    private String secret;
+
+    private String BEARERTOKEN;
 
     ///BeforeEach does not work with JUnit 4 @RunWith(SpringRunner.class)
     ///cannot use JUnit4 and JUnit 5 annotations together
@@ -53,8 +63,21 @@ public class UserIntegrationTest {
         user.setEmail(signup.getEmail());
         user.setPhoneNumber(signup.getPhone());
         user.setPassword(passwordEncoder.encode(signup.getPassword()));
-        user.setRoles(Collections.singleton(new Role("ROLE_USER")));
+        Set<Role> roles = new HashSet<>();
+        roles.add(new Role("ROLE_USER"));
+        user.setRoles(roles);
         userRepository.save(user);
+
+        Map<String, Object> claims = new HashMap<>();
+        final long expirationMillis = System.currentTimeMillis() + (5 * 60 * 1000);
+        BEARERTOKEN = Jwts.builder()
+                .setClaims(claims)
+                .setSubject(user.getEmail())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(expirationMillis))
+                .signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
+
     }
 
     @Test
@@ -111,17 +134,17 @@ public class UserIntegrationTest {
         .andExpect(MockMvcResultMatchers.status().isForbidden());
     }
 
-    // @Test
-    // public void changePassword_success_validRequest() throws Exception {
-    //     Resource resource = resourceLoader.getResource("classpath:changePassword.json");
-    //     String content = new String(resource.getInputStream().readAllBytes());
-    //     mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/changepassword/1")
-    //     .content(content)
-    //     .header("Authorization", BEARERTOKEN)
-    //     .contentType(MediaType.APPLICATION_JSON))
-    //     .andExpect(MockMvcResultMatchers.status().isOk())
-    //     .andExpect(MockMvcResultMatchers.content().string("Password changed successfully"));
-    // }
+    @Test
+    public void changePassword_success_validRequest() throws Exception {
+        Resource resource = resourceLoader.getResource("classpath:changePassword.json");
+        String content = new String(resource.getInputStream().readAllBytes());
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/changepassword/1")
+        .content(content)
+        .header("Authorization", "Bearer " + BEARERTOKEN)
+        .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andExpect(MockMvcResultMatchers.content().string("Password changed successfully"));
+    }
 
    
     private SignupDTO createSignupDTO() {
