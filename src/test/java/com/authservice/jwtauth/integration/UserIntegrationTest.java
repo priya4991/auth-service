@@ -38,10 +38,10 @@ import jakarta.transaction.Transactional;
 @Transactional
 public class UserIntegrationTest {
     @Autowired
-    private MockMvc mockMvc; 
+    private MockMvc mockMvc;
     @Autowired
     private ResourceLoader resourceLoader;
-    @Autowired 
+    @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private UserRepository userRepository;
@@ -52,9 +52,9 @@ public class UserIntegrationTest {
     private String BEARERTOKEN;
     private long id;
 
-    ///BeforeEach does not work with JUnit 4 @RunWith(SpringRunner.class)
-    ///cannot use JUnit4 and JUnit 5 annotations together
-    @BeforeEach   
+    /// BeforeEach does not work with JUnit 4 @RunWith(SpringRunner.class)
+    /// cannot use JUnit4 and JUnit 5 annotations together
+    @BeforeEach
     public void setup() {
         SignupDTO signup = createSignupDTO();
         User user = new User();
@@ -65,7 +65,7 @@ public class UserIntegrationTest {
         user.setEmail(signup.getEmail());
         user.setPhoneNumber(signup.getPhone());
         user.setPassword(passwordEncoder.encode(signup.getPassword()));
-        
+
         Set<Role> roles = new HashSet<>();
         roles.add(new Role("ROLE_USER"));
         user.setRoles(roles);
@@ -100,7 +100,7 @@ public class UserIntegrationTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("username").value("priya"))
                 .andExpect(MockMvcResultMatchers.jsonPath("email").value("pdu@gmail.com"));
     }
-    
+
     @Test
     public void signup_badRequest_when_invalidDate() throws Exception {
         Resource resource = resourceLoader.getResource("classpath:signuprequest_invalidDate.json");
@@ -139,9 +139,9 @@ public class UserIntegrationTest {
         Resource resource = resourceLoader.getResource("classpath:signinrequest.json");
         String content = new String(resource.getInputStream().readAllBytes());
         mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/signin")
-        .content(content)
-        .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(MockMvcResultMatchers.status().isOk());
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
@@ -149,9 +149,9 @@ public class UserIntegrationTest {
         Resource resource = resourceLoader.getResource("classpath:signinrequest_invalid.json");
         String content = new String(resource.getInputStream().readAllBytes());
         mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/signin")
-        .content(content)
-        .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(MockMvcResultMatchers.status().isForbidden());
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
     }
 
     @Test
@@ -159,11 +159,11 @@ public class UserIntegrationTest {
         Resource resource = resourceLoader.getResource("classpath:changePassword.json");
         String content = new String(resource.getInputStream().readAllBytes());
         mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/changepassword/" + id)
-        .content(content)
-        .header("Authorization", "Bearer " + BEARERTOKEN)
-        .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(MockMvcResultMatchers.status().isOk())
-        .andExpect(MockMvcResultMatchers.content().string("Password changed successfully"));
+                .content(content)
+                .header("Authorization", "Bearer " + BEARERTOKEN)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("Password changed successfully"));
     }
 
     @Test
@@ -171,11 +171,12 @@ public class UserIntegrationTest {
         Resource resource = resourceLoader.getResource("classpath:changePassword_newOldSame.json");
         String content = new String(resource.getInputStream().readAllBytes());
         mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/changepassword/" + id)
-        .content(content)
-        .header("Authorization", "Bearer " + BEARERTOKEN)
-        .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(MockMvcResultMatchers.status().isBadRequest())
-        .andExpect(MockMvcResultMatchers.jsonPath("error").value("New password cannot be same as old password"));
+                .content(content)
+                .header("Authorization", "Bearer " + BEARERTOKEN)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(
+                        MockMvcResultMatchers.jsonPath("error").value("New password cannot be same as old password"));
     }
 
     @Test
@@ -183,11 +184,11 @@ public class UserIntegrationTest {
         Resource resource = resourceLoader.getResource("classpath:changePassword_incorrectOld.json");
         String content = new String(resource.getInputStream().readAllBytes());
         mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/changepassword/" + id)
-        .content(content)
-        .header("Authorization", "Bearer " + BEARERTOKEN)
-        .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(MockMvcResultMatchers.status().isBadRequest())
-        .andExpect(MockMvcResultMatchers.jsonPath("error").value("Incorrect old password"));
+                .content(content)
+                .header("Authorization", "Bearer " + BEARERTOKEN)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("error").value("Incorrect old password"));
     }
 
     @Test
@@ -195,11 +196,11 @@ public class UserIntegrationTest {
         Resource resource = resourceLoader.getResource("classpath:changePassword.json");
         String content = new String(resource.getInputStream().readAllBytes());
         mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/changepassword/123")
-        .content(content)
-        .header("Authorization", "Bearer " + BEARERTOKEN)
-        .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(MockMvcResultMatchers.status().isBadRequest())
-        .andExpect(MockMvcResultMatchers.jsonPath("error").value("User not found"));
+                .content(content)
+                .header("Authorization", "Bearer " + BEARERTOKEN)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("error").value("User not found"));
     }
 
     @Test
@@ -207,12 +208,12 @@ public class UserIntegrationTest {
         Resource resource = resourceLoader.getResource("classpath:updateUser.json");
         String content = new String(resource.getInputStream().readAllBytes());
         mockMvc.perform(MockMvcRequestBuilders.put("/api/auth/updateuserdetails/" + id)
-        .content(content)
-        .header("Authorization", "Bearer " + BEARERTOKEN)
-        .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(MockMvcResultMatchers.status().isOk())
-        .andExpect(MockMvcResultMatchers.jsonPath("dateOfBirth").value( "1999-06-06"))
-        .andExpect(MockMvcResultMatchers.jsonPath("lastName").value( "lawy"));
+                .content(content)
+                .header("Authorization", "Bearer " + BEARERTOKEN)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("dateOfBirth").value("1999-06-06"))
+                .andExpect(MockMvcResultMatchers.jsonPath("lastName").value("lawy"));
     }
 
     @Test
@@ -220,11 +221,11 @@ public class UserIntegrationTest {
         Resource resource = resourceLoader.getResource("classpath:updateUser.json");
         String content = new String(resource.getInputStream().readAllBytes());
         mockMvc.perform(MockMvcRequestBuilders.put("/api/auth/updateuserdetails/123")
-        .content(content)
-        .header("Authorization", "Bearer " + BEARERTOKEN)
-        .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(MockMvcResultMatchers.status().isBadRequest())
-        .andExpect(MockMvcResultMatchers.jsonPath("error").value( "User not found"));
+                .content(content)
+                .header("Authorization", "Bearer " + BEARERTOKEN)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("error").value("User not found"));
     }
 
     @Test
@@ -232,45 +233,44 @@ public class UserIntegrationTest {
         Resource resource = resourceLoader.getResource("classpath:updateUser_invalidDate.json");
         String content = new String(resource.getInputStream().readAllBytes());
         mockMvc.perform(MockMvcRequestBuilders.put("/api/auth/updateuserdetails/" + id)
-        .content(content)
-        .header("Authorization", "Bearer " + BEARERTOKEN)
-        .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(MockMvcResultMatchers.status().isBadRequest())
-        .andExpect(MockMvcResultMatchers.jsonPath("error").value( "Invalid date format"));
+                .content(content)
+                .header("Authorization", "Bearer " + BEARERTOKEN)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("error").value("Invalid date format"));
     }
 
     @Test
     public void deletUser_success() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/auth/delete/" + id)
-        .header("Authorization", "Bearer " + BEARERTOKEN))
-        .andExpect(MockMvcResultMatchers.status().isOk())
-        .andExpect(MockMvcResultMatchers.content().string("User is deleted"));
+                .header("Authorization", "Bearer " + BEARERTOKEN))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("User is deleted"));
     }
 
     @Test
     public void deletUser_badRequest_when_invalidUser() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/auth/delete/123")
-        .header("Authorization", "Bearer " + BEARERTOKEN))
-        .andExpect(MockMvcResultMatchers.status().isBadRequest())
-        .andExpect(MockMvcResultMatchers.jsonPath("error").value( "User not found"));
+                .header("Authorization", "Bearer " + BEARERTOKEN))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("error").value("User not found"));
     }
 
     @Test
     public void deletAllUsers_success() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/auth/deleteall")
-        .header("Authorization", "Bearer " + BEARERTOKEN))
-        .andExpect(MockMvcResultMatchers.status().isOk())
-        .andExpect(MockMvcResultMatchers.content().string("All users deleted"));
+                .header("Authorization", "Bearer " + BEARERTOKEN))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("All users deleted"));
     }
 
     @Test
     public void getAllUsers_success() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/auth/getall")
-        .header("Authorization", "Bearer " + BEARERTOKEN))
-        .andExpect(MockMvcResultMatchers.status().isOk());
+                .header("Authorization", "Bearer " + BEARERTOKEN))
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
-   
     private SignupDTO createSignupDTO() {
         return SignupDTO.builder()
                 .dob(LocalDate.parse("1994-07-03"))

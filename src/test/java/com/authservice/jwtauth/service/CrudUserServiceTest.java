@@ -170,8 +170,6 @@ public class CrudUserServiceTest {
         verify(userRepository).deleteAll();
     }
 
-   
-
     private SignupDTO createSignupDTO() {
         return SignupDTO.builder()
                 .dob(LocalDate.parse("1994-07-03"))
