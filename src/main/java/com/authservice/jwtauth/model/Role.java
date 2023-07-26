@@ -12,9 +12,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@NoArgsConstructor
 @Table(name = "role_details")
 public class Role {
 
@@ -28,4 +30,8 @@ public class Role {
     @JsonIgnore
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
+
+    public Role(String name) {
+        this.name = name;
+    }
 }

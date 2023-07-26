@@ -60,7 +60,7 @@ public class AuthController {
     public ResponseEntity<String> changePassword(@Valid @RequestBody ChangePasswordDTO changePasswordDTO,
             @PathVariable(name = "id") long id) {
         crudUserService.changePassword(changePasswordDTO, id);
-        return new ResponseEntity<String>("Password change successfully", HttpStatus.OK);
+        return new ResponseEntity<String>("Password changed successfully", HttpStatus.OK);
     }
 
     @PutMapping("/updateuserdetails/{id}")

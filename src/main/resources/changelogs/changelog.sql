@@ -1,9 +1,9 @@
 -- liquibase formatted sql
 
 -- changeset liquibase:2
-DROP TABLE user_details CASCADE;
-DROP TABLE role_details CASCADE;
-DROP Table user_roles;
+DROP TABLE IF EXISTS user_details CASCADE;
+DROP TABLE IF EXISTS role_details CASCADE;
+DROP TABLE IF EXISTS user_roles;
 CREATE TABLE user_details
 (
     id SERIAL PRIMARY KEY,
