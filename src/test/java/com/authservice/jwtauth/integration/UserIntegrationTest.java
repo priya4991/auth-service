@@ -1,17 +1,13 @@
 package com.authservice.jwtauth.integration;
 
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
@@ -29,8 +25,6 @@ import com.authservice.jwtauth.model.User;
 import com.authservice.jwtauth.model.DTO.SignupDTO;
 import com.authservice.jwtauth.repository.UserRepository;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.transaction.Transactional;
 
 @SpringBootTest
