@@ -40,51 +40,51 @@ public class AuthController {
     private CrudUserService crudUserService;
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@RequestBody SigninDTO login) {
+    public ResponseEntity<TokenResponse> authenticateUser(@RequestBody SigninDTO login) {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     login.getUsernameOrEmail(), login.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             String token = tokenManager.generateJwtToken(authentication);
 
-            return new ResponseEntity<TokenResponse>(new TokenResponse(token), HttpStatus.OK);
+            return new ResponseEntity<>(new TokenResponse(token), HttpStatus.OK);
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody SignupDTO signup) {
+    public ResponseEntity<User> registerUser(@RequestBody SignupDTO signup) {
         User user = crudUserService.createUser(signup);
-        return new ResponseEntity<User>(user, HttpStatus.CREATED);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @PostMapping("/changepassword/{id}")
     public ResponseEntity<String> changePassword(@Valid @RequestBody ChangePasswordDTO changePasswordDTO,
             @PathVariable(name = "id") long id) {
         crudUserService.changePassword(changePasswordDTO, id);
-        return new ResponseEntity<String>("Password changed successfully", HttpStatus.OK);
+        return new ResponseEntity<>("Password changed successfully", HttpStatus.OK);
     }
 
     @PutMapping("/updateuserdetails/{id}")
-    public ResponseEntity<?> updateUser(@RequestBody UpdateUserDTO updateUserDTO, @PathVariable(name = "id") long id) {
+    public ResponseEntity<User> updateUser(@RequestBody UpdateUserDTO updateUserDTO, @PathVariable(name = "id") long id) {
         User user = crudUserService.updateUser(updateUserDTO, id);
-        return new ResponseEntity<User>(user, HttpStatus.OK);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping("/getall")
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = crudUserService.getAllUsers();
-        return new ResponseEntity<List<User>>(users, HttpStatus.OK);
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable(name = "id") long id) {
         crudUserService.deleteUser(id);
-        return new ResponseEntity<String>("User is deleted", HttpStatus.OK);
+        return new ResponseEntity<>("User is deleted", HttpStatus.OK);
     }
 
     @DeleteMapping("/deleteall")
     public ResponseEntity<String> deleteAll() {
         crudUserService.deleteAll();
-        return new ResponseEntity<String>("All users deleted", HttpStatus.OK);
+        return new ResponseEntity<>("All users deleted", HttpStatus.OK);
     }
 
 }
