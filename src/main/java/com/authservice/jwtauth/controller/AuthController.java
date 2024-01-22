@@ -33,27 +33,18 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/auth")
 public class AuthController {
     @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private TokenManager tokenManager;
-    @Autowired
     private CrudUserService crudUserService;
 
     @PostMapping("/signin")
     public ResponseEntity<TokenResponse> authenticateUser(@RequestBody SigninDTO login) {
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    login.getUsernameOrEmail(), login.getPassword()));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            String token = tokenManager.generateJwtToken(authentication);
-
+            String token = crudUserService.signinUser(login.getUsernameOrEmail(), login.getPassword());
             return new ResponseEntity<>(new TokenResponse(token), HttpStatus.OK);
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<User> registerUser(@RequestBody SignupDTO signup) {
-        User user = crudUserService.createUser(signup);
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+    public ResponseEntity<String> registerUser(@RequestBody SignupDTO signup) {
+        String token = crudUserService.createUser(signup);
+        return new ResponseEntity<>(token, HttpStatus.CREATED);
     }
 
     @PostMapping("/changepassword/{id}")
