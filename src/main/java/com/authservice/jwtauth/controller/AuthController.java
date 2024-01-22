@@ -5,10 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.authservice.jwtauth.config.security.TokenManager;
 import com.authservice.jwtauth.model.User;
 import com.authservice.jwtauth.model.Auth.TokenResponse;
 import com.authservice.jwtauth.model.DTO.ChangePasswordDTO;
@@ -33,27 +28,18 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/auth")
 public class AuthController {
     @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private TokenManager tokenManager;
-    @Autowired
     private CrudUserService crudUserService;
 
     @PostMapping("/signin")
     public ResponseEntity<TokenResponse> authenticateUser(@RequestBody SigninDTO login) {
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    login.getUsernameOrEmail(), login.getPassword()));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            String token = tokenManager.generateJwtToken(authentication);
-
+            String token = crudUserService.signinUser(login.getUsernameOrEmail(), login.getPassword());
             return new ResponseEntity<>(new TokenResponse(token), HttpStatus.OK);
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<User> registerUser(@RequestBody SignupDTO signup) {
-        User user = crudUserService.createUser(signup);
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+    public ResponseEntity<String> registerUser(@RequestBody SignupDTO signup) {
+        String token = crudUserService.createUser(signup);
+        return new ResponseEntity<>(token, HttpStatus.CREATED);
     }
 
     @PostMapping("/changepassword/{id}")

@@ -9,10 +9,11 @@ import com.authservice.jwtauth.model.DTO.SignupDTO;
 import com.authservice.jwtauth.model.DTO.UpdateUserDTO;
 
 public interface CrudUserService {
-    public User createUser(SignupDTO signup) throws BadRequestException;
-    public User updateUser(UpdateUserDTO updateUser, long id) throws BadRequestException;
-    public void changePassword(ChangePasswordDTO changePassword, long id) throws BadRequestException;
-    public List<User> getAllUsers();
-    public void deleteUser(long id);
-    public void deleteAll();
+    String createUser(SignupDTO signup) throws BadRequestException;
+    String signinUser(String usernameOrEmail, String password) throws BadRequestException;
+    User updateUser(UpdateUserDTO updateUser, long id) throws BadRequestException;
+    void changePassword(ChangePasswordDTO changePassword, long id) throws BadRequestException;
+    List<User> getAllUsers();
+    void deleteUser(long id);
+    void deleteAll();
 }

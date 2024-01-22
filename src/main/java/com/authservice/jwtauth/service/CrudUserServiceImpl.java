@@ -3,7 +3,12 @@ package com.authservice.jwtauth.service;
 import java.util.Collections;
 import java.util.List;
 
+import com.authservice.jwtauth.config.security.TokenManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,9 +29,13 @@ public class CrudUserServiceImpl implements CrudUserService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private TokenManager tokenManager;
 
     @Override
-    public User createUser(SignupDTO signup) throws BadRequestException {
+    public String createUser(SignupDTO signup) throws BadRequestException {
         if (userRepository.existsByUsername(signup.getUsername())) {
             throw new BadRequestException("Username is already taken");
         }
@@ -47,8 +56,18 @@ public class CrudUserServiceImpl implements CrudUserService {
         user.setRoles(Collections.singleton(roles));
 
         userRepository.save(user);
-        return user;
 
+        return signinUser(signup.getUsername(), signup.getPassword());
+//        return user;
+
+    }
+
+    @Override
+    public String signinUser(String usernameOrEmail, String password) throws BadRequestException {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                usernameOrEmail, password));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return tokenManager.generateJwtToken(authentication);
     }
 
     @Override
