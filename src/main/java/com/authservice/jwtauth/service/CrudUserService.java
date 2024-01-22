@@ -3,7 +3,6 @@ package com.authservice.jwtauth.service;
 import java.util.List;
 
 import com.authservice.jwtauth.config.exception.BadRequestException;
-import com.authservice.jwtauth.model.DTO.SigninDTO;
 import com.authservice.jwtauth.model.User;
 import com.authservice.jwtauth.model.DTO.ChangePasswordDTO;
 import com.authservice.jwtauth.model.DTO.SignupDTO;
