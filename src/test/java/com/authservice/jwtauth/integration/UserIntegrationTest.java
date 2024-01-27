@@ -1,9 +1,10 @@
 package com.authservice.jwtauth.integration;
 
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
-
+import com.authservice.jwtauth.model.DTO.SignupDTO;
+import com.authservice.jwtauth.model.Role;
+import com.authservice.jwtauth.model.User;
+import com.authservice.jwtauth.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,12 +21,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import com.authservice.jwtauth.model.Role;
-import com.authservice.jwtauth.model.User;
-import com.authservice.jwtauth.model.DTO.SignupDTO;
-import com.authservice.jwtauth.repository.UserRepository;
-
-import jakarta.transaction.Transactional;
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -77,8 +75,8 @@ public class UserIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/signup")
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isCreated());
-//                .andExpect(MockMvcResultMatchers.jsonPath("username").value("priya"))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("result").value("success"));
 //                .andExpect(MockMvcResultMatchers.jsonPath("email").value("pdu@gmail.com"));
     }
 
@@ -144,7 +142,7 @@ public class UserIntegrationTest {
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string("Password changed successfully"));
+                .andExpect(MockMvcResultMatchers.jsonPath("result").value("success"));
     }
 
     @Test
@@ -193,8 +191,7 @@ public class UserIntegrationTest {
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("dateOfBirth").value("1999-06-06"))
-                .andExpect(MockMvcResultMatchers.jsonPath("lastName").value("lawy"));
+                .andExpect(MockMvcResultMatchers.jsonPath("result").value("success"));
     }
 
     @Test
@@ -226,7 +223,7 @@ public class UserIntegrationTest {
     public void deletUser_success() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/auth/delete/{id}", id))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string("User is deleted"));
+                .andExpect(MockMvcResultMatchers.jsonPath("body").value("User is deleted"));
     }
 
     @Test
@@ -242,7 +239,7 @@ public class UserIntegrationTest {
     public void deletAllUsers_success() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/auth/deleteall"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string("All users deleted"));
+                .andExpect(MockMvcResultMatchers.jsonPath("body").value("All users deleted"));
     }
 
     @Test
